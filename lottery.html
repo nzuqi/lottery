@@ -1,0 +1,119 @@
+<html lang="en-US">
+<title>LOTTERY</title>
+
+<body>
+    <script>
+        // ==== LOTTERY PROGRAM ====
+        console.log('Program started...');
+
+        // Settings
+        const persist = true; // 1. Make sure the user inputs a number only, loop until the user inputs a number
+
+        // Function: Generates 3 random numbers, between 1 and 10 (inclusive)
+        const generateNumbers = () => {
+            var arr = [];
+            while (arr.length < 3) {
+                var r = Math.floor(Math.random() * 10) + 1;
+                arr.push(r);
+            }
+            return arr;
+        };
+
+        const winningNumbers = generateNumbers(); // An array of the 3 winning numbers
+
+        // Function: Prompt user for a number
+        const getUserNumber = (type = '', err = '') => {
+            var q = "";
+            if (err.trim() != '') q = "\n" + err + "\n";
+            q += "Enter your ";
+            q += type;
+            q += " number";
+            var inp = prompt(q);
+            if (persist && inp != null) {
+                if (inp.trim() == '' || isNaN(inp.trim())) getUserNumber(type, "Error: Invalid input!");
+            }
+            return inp;
+        };
+
+        var userNumbers = []; // An array of the 3 user selected numbers
+
+        // Loop user input
+        ['first', 'second', 'third'].forEach((e, i) => {
+            let n = getUserNumber(e);
+            userNumbers.push(Number(n));
+        });
+
+        var correct = 0; // Store correct matches
+
+        var _winningNumbers = [...winningNumbers]; // Store winning numbers temporarily
+
+        // Process correct answers
+        userNumbers.forEach(n => {
+            let count = _winningNumbers.filter(num => { return num == n }).length;
+            if (count >= 1) {
+                correct += 1;
+                _winningNumbers.splice(_winningNumbers.indexOf(n), 1);
+            }
+        });
+
+        // Process user winnings
+        const getWinnings = () => {
+            var winnings = "";
+            switch (correct) {
+                case 1:
+                    winnings = "$100";
+                    break;
+                case 2:
+                    winnings = "$200";
+                    break;
+                case 3:
+                    winnings = "$500";
+                    break;
+                default:
+                    winnings = "$0";
+                    break;
+            }
+            return winnings;
+        }
+
+        // Alert winnings
+        var resp = "";
+        resp += "The computer's numbers are ";
+        resp += winningNumbers.join(" ");
+        resp += "\n";
+        resp += "Your guesses were ";
+        resp += userNumbers.join(" ");
+        resp += "\n";
+        resp += "You got ";
+        resp += correct;
+        resp += " right";
+        resp += "\n";
+        resp += "You've won ";
+        resp += getWinnings();
+
+        // Function: Show response to user and prompt 'Play again?''
+        const showResponse = (err = '') => {
+            var q = resp;
+            q += "\n\n";
+            if (err.trim() != '') q += "\n" + err + "\n";
+            q += "Play Again? Y or N";
+            var inp = prompt(q);
+            if (persist && inp != null) {
+                if (inp.trim() == '' || !isNaN(inp.trim())) showResponse("Error: Invalid input!");
+            }
+            if (inp.toLowerCase() == 'y') window.location.reload();
+        };
+
+        showResponse();
+
+        console.log('Winning numbers: ', winningNumbers);
+        console.log('Selected numbers: ', userNumbers);
+        console.log('Correct numbers: ', correct);
+        console.log('Amount won: ', getWinnings());
+
+        console.log('...program completed!');
+        // ========== END ==========
+    </script>
+</body>
+
+</html>
